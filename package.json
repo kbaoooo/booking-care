@@ -1,0 +1,22 @@
+{
+  "name": "sequelize_cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kbaoooo/sequelize_CLI-.git"
+  },
+  "author": "kbao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kbaoooo/sequelize_CLI-/issues"
+  },
+  "homepage": "https://github.com/kbaoooo/sequelize_CLI-#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
