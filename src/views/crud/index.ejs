@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Document</title>
+    <style>
+        .action {
+            display: inline-block;
+            padding: 20px 30px;
+            background-color: aqua;
+            border-radius: 7px;
+            text-align: center;
+            margin-right: 20px;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- header -->
+        <%- include('../components/header.ejs') %>
+
+            <!-- body -->
+            <div class="content">
+                <a class="action" href="crud/add-crud">Add</a>
+                <a class="action" href="crud/read-crud">View</a>
+            </div>
+
+            <!-- footer -->
+            <%- include('../components/footer.ejs') %>
+
+    </div>
+</body>
+<!-- script -->
+<%- include('../components/script.ejs') %>
+
+</html>
