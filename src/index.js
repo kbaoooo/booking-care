@@ -9,10 +9,10 @@ import cors from 'cors'
 
 const app = express();
 
+app.use(cors())
+
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json());
-
-app.use(cors({origin: true}))
 
 // override with POST having ?_method=
 app.use(methodOverride('_method'))
