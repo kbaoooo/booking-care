@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 const salt = bcrypt.genSaltSync(10)
 
-
 async function hashPassword(password) {
     try {
         const hash = await bcrypt.hashSync(password, salt) 
