@@ -1,4 +1,4 @@
-import { handleUserLogin, getAllUsers, createNewUser, deleteUser, editUser } from "../services/userService";
+import { handleUserLogin, getAllUsers, createNewUser, deleteUser, editUser, getUserById } from "../services/userService";
 
 class ApiController {
     async handleLogin(req, res, next) {
@@ -53,6 +53,12 @@ class ApiController {
         let id = req.params.id;
         let request = req.body;
         let response =  await editUser(id, request)
+        res.status(200).json(response)
+    }
+
+    async handleGetDetailUser(req, res, next) {
+        let id = req.params.id;
+        let response = await getUserById(id);
         res.status(200).json(response)
     }
 }

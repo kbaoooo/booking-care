@@ -127,13 +127,12 @@ export const editUser = async (id, request) => {
             where: { id }
         })
         if (user) {
-            const { firstName, lastName, email, phone, address, roleId, gender } = request;
-            if (firstName && lastName && email && phone && address && roleId && gender) {
+            const { firstName, lastName, phone, address, roleId, gender } = request;
+            if (firstName && lastName  && phone && address && roleId && gender) {
 
                 user.set({
                     firstName,
                     lastName,
-                    email,
                     address,
                     phone,
                     roleId,
@@ -155,6 +154,25 @@ export const editUser = async (id, request) => {
             message: 'User does not existed!'
         })
     } catch (err) {
+        console.error(err);
+    }
+}
+
+export const getUserById = async (id) => {
+    try {
+        let user = await db.User.findOne({where: {id}})
+        if(user) {
+            return ({
+                errCode:0,
+                message: 'ok',
+                data: user
+            })
+        }
+        return ({
+            errCode: 3,
+            message: 'User does not exsited!'
+         })
+    } catch(err) {
         console.error(err);
     }
 }
