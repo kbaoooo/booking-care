@@ -9,7 +9,10 @@ import {
 } from "../services/userService";
 
 import {
-    getTopDoctorsService
+    getTopDoctorsService,
+    getAllDoctorsService,
+    saveDoctorInfoService,
+    getDetailDoctor
 } from "../services/doctorService";
 
 class ApiController {
@@ -105,6 +108,45 @@ class ApiController {
             errCode: 1,
             message: 'Error from server'
         })
+    }
+  }
+
+  async handleGetAllDoctors(req, res, next) {
+    try {
+        let response = await getAllDoctorsService();
+        res.status(200).json(response)
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({
+            errCode: 1,
+            message: 'Error from server'
+        })
+    }
+  }
+
+  async handleSaveDoctorInfo(req, res, next) {
+    try {
+      let response = await saveDoctorInfoService(req.body);
+      return res.status(200).json(response);
+    } catch (error) {
+      console.log(error);
+      return res.status(200).json({
+          errCode: 1,
+          message: 'Error from server'
+      })
+    }
+  }
+
+  async handleGetDetailDoctor(req, res,next) {
+    try {
+      let id = req.params.id;
+      let doctor =  await getDetailDoctor(id);
+      return res.status(200).json(doctor)
+    } catch (error) {
+      return res.status(200).json({
+        errCode: -1,
+        message: 'Error from server!'
+      })
     }
   }
 }
