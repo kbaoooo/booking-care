@@ -9,7 +9,7 @@ export const handleUserLogin = async (email, password) => {
     if (isExist) {
       let user = await db.User.findOne({
         where: { email },
-        attributes: ["email", "password", "lastName", "firstName"],
+        attributes: ["email", "password", "lastName", "firstName", "roleId"],
         raw: true,
       });
       let checkPassword = bcrypt.compareSync(password, user.password);

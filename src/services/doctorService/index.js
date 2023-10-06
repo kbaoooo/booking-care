@@ -76,12 +76,24 @@ export const saveDoctorInfoService = async (data) => {
         message: "Missing required params!",
       };
     } else {
-      await db.Markdown.create({
-        contentHTML: data.contentHTML,
-        contentMarkdown: data.contentMarkdown,
-        description: data.description,
-        doctorId: id,
-      });
+      if (data.hasOldData) {
+        let doctor = await db.Markdown.findOne({
+          where: {doctorId: id},
+        })
+        if(doctor) {
+          doctor.contentHTML = data.contentHTML;
+          doctor.contentMarkdown = data.contentMarkdown
+          doctor.description = data.description
+          await doctor.save()
+        }
+      } else {
+        await db.Markdown.create({
+          contentHTML: data.contentHTML,
+          contentMarkdown: data.contentMarkdown,
+          description: data.description,
+          doctorId: id,
+        });
+      }
 
       return {
         errCode: 0,
@@ -107,7 +119,7 @@ export const getDetailDoctor = async (id) => {
           roleId: "R2",
         },
         attributes: {
-          exclude: ["password", "image", "updatedAt", "createdAt"],
+          exclude: ["password", "updatedAt", "createdAt"],
         },
         include: [
           {
@@ -122,15 +134,18 @@ export const getDetailDoctor = async (id) => {
 
           {
             model: db.Allcode,
-            as: 'positionData',
-            attributes: ['valueEn', 'valueVi']
+            as: "positionData",
+            attributes: ["valueEn", "valueVi"],
           },
         ],
-        raw: true,
+        raw: false,
         nest: true,
       });
 
       if (doctor) {
+        if (doctor.image) {
+          doctor.image = new Buffer(doctor.image, "base64").toString("binary");
+        }
         return {
           errCode: 0,
           message: "ok",
