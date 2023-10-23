@@ -16,4 +16,6 @@ apiRouter.get("/get-all-doctors", ApiController.handleGetAllDoctors);
 apiRouter.post("/save-doctor-info", ApiController.handleSaveDoctorInfo);
 apiRouter.get("/get-detail-doctor/:id", ApiController.handleGetDetailDoctor);
 
+apiRouter.post("/bulk-create-schedule", ApiController.handleBulkCreateSchedule);
+
 export default apiRouter;

@@ -12,7 +12,8 @@ import {
     getTopDoctorsService,
     getAllDoctorsService,
     saveDoctorInfoService,
-    getDetailDoctor
+    getDetailDoctor,
+    bulkCreateSchedule
 } from "../services/doctorService";
 
 class ApiController {
@@ -142,6 +143,19 @@ class ApiController {
       let id = req.params.id;
       let doctor =  await getDetailDoctor(id);
       return res.status(200).json(doctor)
+    } catch (error) {
+      return res.status(200).json({
+        errCode: -1,
+        message: 'Error from server!'
+      })
+    }
+  }
+
+  async handleBulkCreateSchedule(req, res, next) {
+    try {
+      let data = req.body;
+      let response =  await bulkCreateSchedule(data);
+      return res.status(200).json(response)
     } catch (error) {
       return res.status(200).json({
         errCode: -1,
