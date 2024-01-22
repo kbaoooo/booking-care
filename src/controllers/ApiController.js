@@ -9,11 +9,12 @@ import {
 } from "../services/userService";
 
 import {
-    getTopDoctorsService,
-    getAllDoctorsService,
-    saveDoctorInfoService,
-    getDetailDoctor,
-    bulkCreateSchedule
+  getTopDoctorsService,
+  getAllDoctorsService,
+  saveDoctorInfoService,
+  getDetailDoctor,
+  bulkCreateSchedule,
+  getScheduleByDateDoctor,
 } from "../services/doctorService";
 
 class ApiController {
@@ -81,12 +82,9 @@ class ApiController {
   async getAllCodes(req, res, next) {
     try {
       let response = await getAllCodesService(req.query.type);
-      if (response && response.errCode == 0) {
-        let data = response.data;
-        return res.status(200).json(data);
-      }
-      return res.status.json(response);
+      return res.status(200).json(response);
     } catch (error) {
+      console.log(error);
       return res.status(200).json({
         errCode: -1,
         message: "Error from server",
@@ -96,32 +94,31 @@ class ApiController {
 
   async handleGetTopDoctors(req, res, next) {
     let limit = 10;
-    if(req.query.limit) 
-    console.log(req.query.limit);
-        limit = +req.query.limit
+    if (req.query.limit) console.log(req.query.limit);
+    limit = +req.query.limit;
     try {
-        let response = await getTopDoctorsService(limit);
-        console.log(response);
-        res.status(200).json(response)
+      let response = await getTopDoctorsService(limit);
+      console.log(response);
+      res.status(200).json(response);
     } catch (error) {
-        console.log(error);
-        return res.status(200).json({
-            errCode: 1,
-            message: 'Error from server'
-        })
+      console.log(error);
+      return res.status(200).json({
+        errCode: 1,
+        message: "Error from server",
+      });
     }
   }
 
   async handleGetAllDoctors(req, res, next) {
     try {
-        let response = await getAllDoctorsService();
-        res.status(200).json(response)
+      let response = await getAllDoctorsService();
+      res.status(200).json(response);
     } catch (error) {
-        console.log(error);
-        return res.status(200).json({
-            errCode: 1,
-            message: 'Error from server'
-        })
+      console.log(error);
+      return res.status(200).json({
+        errCode: 1,
+        message: "Error from server",
+      });
     }
   }
 
@@ -132,35 +129,47 @@ class ApiController {
     } catch (error) {
       console.log(error);
       return res.status(200).json({
-          errCode: 1,
-          message: 'Error from server'
-      })
+        errCode: 1,
+        message: "Error from server",
+      });
     }
   }
 
-  async handleGetDetailDoctor(req, res,next) {
+  async handleGetDetailDoctor(req, res, next) {
     try {
       let id = req.params.id;
-      let doctor =  await getDetailDoctor(id);
-      return res.status(200).json(doctor)
+      let doctor = await getDetailDoctor(id);
+      return res.status(200).json(doctor);
     } catch (error) {
       return res.status(200).json({
         errCode: -1,
-        message: 'Error from server!'
-      })
+        message: "Error from server!",
+      });
     }
   }
 
   async handleBulkCreateSchedule(req, res, next) {
     try {
       let data = req.body;
-      let response =  await bulkCreateSchedule(data);
-      return res.status(200).json(response)
+      let response = await bulkCreateSchedule(data);
+      return res.status(200).json(response);
     } catch (error) {
       return res.status(200).json({
         errCode: -1,
-        message: 'Error from server!'
-      })
+        message: "Error from server!",
+      });
+    }
+  }
+
+  async handleGetScheduleByDate(req, res, next) {
+    try {
+      let info = await getScheduleByDateDoctor(
+        req.query.doctorId,
+        req.query.date
+      );
+      return res.status(200).json(info);
+    } catch (error) {
+      console.log(error);
     }
   }
 }

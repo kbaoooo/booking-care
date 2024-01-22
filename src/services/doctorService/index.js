@@ -1,6 +1,8 @@
+import { where } from "sequelize";
 import db from "../../models";
 require("dotenv").config();
 import _ from "lodash";
+import { raw } from "body-parser";
 
 const MAX_NUMBER_PATIENTS = process.env.MAX_NUMBER_PATIENTS;
 
@@ -74,7 +76,17 @@ export const getAllDoctorsService = async () => {
 export const saveDoctorInfoService = async (data) => {
   try {
     let id = data.selectedDoctor.value;
-    if (!id || !data.contentHTML || !data.contentMarkdown) {
+    if (
+      !id ||
+      !data.contentHTML ||
+      !data.contentMarkdown ||
+      !data.selectedPrice ||
+      !data.selectedPayment ||
+      !data.selectedProvince ||
+      !data.nameClinic ||
+      !data.addressClinic ||
+      !data.note
+    ) {
       return {
         errCode: 1,
         message: "Missing required params!",
@@ -96,6 +108,35 @@ export const saveDoctorInfoService = async (data) => {
           contentMarkdown: data.contentMarkdown,
           description: data.description,
           doctorId: id,
+        });
+      }
+
+      let doctorInfo = await db.Doctor_Info.findOne({
+        where: {
+          doctorId: id,
+        },
+        raw: false,
+      });
+
+      if (doctorInfo) {
+        //update
+        doctorInfo.priceId = data.selectedPrice;
+        doctorInfo.paymentId = data.selectedPayment;
+        doctorInfo.provinceId = data.selectedProvince;
+        doctorInfo.note = data.note;
+        doctorInfo.addressClinic = data.addressClinic;
+        doctorInfo.nameClinic = data.nameClinic;
+        await doctorInfo.save();
+      } else {
+        //create
+        await db.Doctor_Info.create({
+          doctorId: id,
+          priceId: data.selectedPrice,
+          paymentId: data.selectedPayment,
+          provinceId: data.selectedProvince,
+          note: data.note,
+          addressClinic: data.addressClinic,
+          nameClinic: data.nameClinic,
         });
       }
 
@@ -187,18 +228,16 @@ export const bulkCreateSchedule = async (data) => {
           raw: true,
         });
 
-        if (existing && existing.length > 0) {
-          existing = existing.map((item) => {
-            item.date = new Date(item.date).getTime();
-            return item;
-          });
-        }
-         
         let toCreate = _.differenceWith(schedule, existing, (a, b) => {
-          return a.timeType === b.timeType && a.date === b.date && a.doctorId === b.doctorId;
+          return (
+            a.timeType === b.timeType &&
+            a.date === b.date &&
+            a.doctorId === b.doctorId
+          );
         });
 
         if (toCreate && toCreate.length > 0) {
+          console.log("last create: ", toCreate);
           await db.Schedule.bulkCreate(toCreate);
         }
 
@@ -207,6 +246,42 @@ export const bulkCreateSchedule = async (data) => {
           message: "ok",
         };
       }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getScheduleByDateDoctor = async (doctorId, date) => {
+  try {
+    if (!doctorId || !date) {
+      return {
+        errCode: 1,
+        message: "Missing required params!",
+      };
+    } else {
+      let data = await db.Schedule.findAll({
+        where: { doctorId, date },
+        include: [
+          {
+            model: db.Allcode,
+            as: "timeTypeData",
+            attributes: ["valueVI", "valueEN"],
+          },
+        ],
+        raw: false,
+        nest: true,
+      });
+
+      if (!data) {
+        data = [];
+      }
+
+      return {
+        errCode: 0,
+        message: "OK",
+        data,
+      };
     }
   } catch (error) {
     console.log(error);
